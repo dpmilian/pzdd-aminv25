@@ -5,7 +5,7 @@ import crypto from "crypto";
 const nombres = await import("./nombres.json", { assert: { type: "json" } });
 
 var amigo_invisible = {};
-const base_url = "https://amigo-invisible.ddns.net/ai";
+const base_url = "https://pzdd.ddns.net/ai";
 
 let locked = true;
 const password = "danieselmejor";
