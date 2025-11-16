@@ -131,7 +131,7 @@ fastify.get("/soy/:hash_nombre", async function handler(request, reply) {
 fastify.get("/todos", async function handler(request, reply) {
   let links = [];
   
-  const base_url = request.protocol + "://" + request.hostname;
+  const base_url = "https://pzdd.ddns.net/ai/";
   console.log(base_url);
   for (const nombre in amigo_invisible) {
     const hash_nombre = crypto
