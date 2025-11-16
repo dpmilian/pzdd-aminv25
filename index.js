@@ -2,24 +2,10 @@ import storage from "node-persist";
 import random from "random-seedable";
 import crypto from "crypto";
 
-const nombres = [
-  "Clara",
-  "Isa",
-  "Daniel",
-  "Adri",
-  "Luli",
-  "Xoel",
-  "Sheila",
-  "Jose",
-  "Thais",
-  "Maria Dolores",
-  "Maria Teresa",
-  "Manolito el Guapo",
-  "Lolita",
-  "Patri",
-];
+const nombres = await import("./nombres.json", { assert: { type: "json" } });
+
 var amigo_invisible = {};
-const base_url = "https://pzdd.ddns.net/ai";
+const base_url = "https://amigo-invisible.ddns.net/ai";
 
 let locked = true;
 const password = "danieselmejor";
