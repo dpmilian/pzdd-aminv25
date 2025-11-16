@@ -1,11 +1,23 @@
 import storage from "node-persist";
 import random from "random-seedable";
 import crypto from "crypto";
+import { createAvatar } from '@dicebear/core';
+import { thumbs } from '@dicebear/collection';
 
-const nombres = await import("./nombres.json", { assert: { type: "json" } });
+import  nombres  from "./nombres.js";
+console.log("Nombres cargados:", nombres);
+
+const avatars = {};
+for (const nombre of nombres) {
+  const avatar = createAvatar(thumbs, {
+    seed: nombre,
+    scale: 90,  
+  }).toDataUri();
+
+  avatars[nombre] = avatar;
+}
 
 var amigo_invisible = {};
-const base_url = "https://pzdd.ddns.net/ai";
 
 let locked = true;
 const password = "danieselmejor";
@@ -95,16 +107,18 @@ fastify.get("/soy/:hash_nombre", async function handler(request, reply) {
       let to_send = `
                 <div style="margin-left: auto; margin-right: auto; margin-top: 100px; font-size: 300%; text-align: center; font-family: Arial">
                 <h2>Hola <b style="color: navy; text-transform: uppercase">${nombre}</b></h2>
-                    <br/>    
-                <img style='margin-left: auto; margin-right:auto; height:400; ' src='https://api.dicebear.com/9.x/bottts/svg?seed=${nombre}'></img>
+                    <br/>
+
+                <img style='margin-left: auto; margin-right:auto; height:400; ' src='${avatars[nombre]}'></img>
                     <br/>`;
       if (locked) {
-        to_send += `<h2>tienes que regalar a...</h2><br/><br/>
+        to_send += `<h2>tienes que regalar a...</h2>
         <h1><b style="color: red; text-transform: uppercase"> ${amigo_invisible[nombre]}</b></h1>
+        <img style='margin-left: auto; margin-right:auto; height:400; ' src='${avatars[amigo_invisible[nombre]]}'></img>
     </div>`;
       } else {
         to_send +=
-          "<h2>El sorteo no está cerrado aún, espera por más instrucciones!</h2>";
+          "<h2>El sorteo no está cerrado aún, no seas impaciente!</h2>";
       }
 
       reply.type("text/html").send(to_send);
@@ -116,6 +130,9 @@ fastify.get("/soy/:hash_nombre", async function handler(request, reply) {
 
 fastify.get("/todos", async function handler(request, reply) {
   let links = [];
+  
+  const base_url = request.protocol + "://" + request.hostname;
+  console.log(base_url);
   for (const nombre in amigo_invisible) {
     const hash_nombre = crypto
       .createHash("md5")

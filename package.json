@@ -11,6 +11,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@dicebear/collection": "^9.2.4",
+    "@dicebear/core": "^9.2.4",
     "fastify": "^4.24.3",
     "netlify-cli": "^23.11.0",
     "node-persist": "^3.1.3",
