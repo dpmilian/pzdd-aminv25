@@ -5,14 +5,14 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "",
+    "build": "rm -rf dist && mkdir dist && cp index.js dist/index.js && cp -r pub dist/pub",
     "start": "node index.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "fastify": "^4.24.3",
+    "netlify-cli": "^23.11.0",
     "node-persist": "^3.1.3",
     "random-seedable": "^1.0.8"
   }
