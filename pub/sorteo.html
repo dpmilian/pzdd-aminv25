@@ -1,0 +1,150 @@
+<html>
+
+<head>
+    <style>
+        #todos {
+            margin-top: 100px;
+            margin-right: auto;
+            margin-left: auto;
+            text-align: center;
+        }
+
+        #sortear {
+            background-color: #04AA6D;
+            border: none;
+            color: white;
+            margin-top: 100px;
+            padding: 10px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 32px;
+            font-weight: bold;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+
+        #lockear {
+            background-color: red;
+            border: none;
+            color: white;
+            padding: 5px;
+            text-align: right;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        #solodani {
+            position: fixed;
+            right: 20px;
+            bottom: 100px;
+        }
+
+        #target {
+            margin-left: auto;
+            margin-right: auto;
+            background-color: navy;
+            color: white;
+            border-radius: 5px;
+            box-shadow: 0 0 20px 10px rgba(255, 255, 255, 0.5);
+        }
+    </style>
+</head>
+
+<body>
+    <div id="todos">
+        <a id="sortear" href="#"> PULSA PARA SORTEAR</a><br />
+        <img id="target" height=400 style="display:none" src=""></img>
+
+    </div>
+    <div id="solodani">
+        <a id="lockear" href="#">bloquear/ desbloquear sorteo</a>
+        <br />
+        <input type="password" id="password" placeholder="Solo para Daniel "
+            style="margin-top: 10px; padding: 10px; font-size: 16px;">
+    </div>
+    <script>
+
+        const toggleBlock = (status) => {
+            const lockearElement = document.getElementById('lockear');
+            if (status === 'Locked') {
+                lockearElement.textContent = 'Bloqueado, pulsa para desbloquear sorteo';
+            } else {
+                lockearElement.textContent = 'Desbloqueado';
+            }
+        }
+
+        const parseResponseData = (data, intentandoSortear) => {
+            console.log(data);
+            const [status, seed] = data.split(',');
+            toggleBlock(status);
+            document.getElementById('target').src = `https://api.dicebear.com/9.x/notionists-neutral/svg?seed=${seed}`;
+            document.getElementById('target').style.display = 'block';
+
+            if (status === 'Locked' && intentandoSortear) {
+                alert("Buen intento, el sorteo está bloqueado. ¿No te gusta quien te tocó?")
+            }
+        }
+        const sendPassword = () => {
+            const password = document.getElementById('password').value;
+            fetch(`/ai/lock/${password}`, {
+                method: 'GET',
+            })
+                .then(response => response.text())
+                .then((data) => {
+                    parseResponseData(data);
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+        };
+
+        window.addEventListener('load', function () {
+            fetch('/ai/lock/error', {
+                method: 'GET',
+            })
+                .then(response => response.text())
+                .then((data) => {
+                    parseResponseData(data);
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+        });
+        document.getElementById('lockear').addEventListener('click', sendPassword);
+        document.getElementById('password').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                sendPassword();
+            }
+        });
+        document.getElementById('sortear').addEventListener('click', function () {
+            // call window.location.href /sorteo
+            fetch('/ai/sorteo', {
+                method: 'GET',
+
+            }).then(response => response.text())
+                .then((data) => {
+                    parseResponseData(data, true);
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+        });
+
+        document.getElementById('target').addEventListener('click', function () {
+            fetch('/ai/sorteo', {
+                method: 'GET',
+            }).then(response => response.text())
+                .then((data) => {
+                    parseResponseData(data, true);
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+        });
+
+
+    </script>
+</body>
+
+</html>
